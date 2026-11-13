@@ -1,0 +1,80 @@
+{
+    "error_string": "Success.",
+    "export_time": 193,
+    "layer_height": 0.11999999731779099,
+    "plate_index": 0,
+    "prepare_time": 39,
+    "return_code": 0,
+    "sliced_plates": [
+        {
+            "feature_type_times": {
+                "Bottom surface": 28.07010269165039,
+                "Bridge": 28.520353317260742,
+                "Custom": 35.865745544433594,
+                "Flush": 43.84188461303711,
+                "Gap infill": 4.6999688148498535,
+                "Inner wall": 40.37739181518555,
+                "Internal solid infill": 130.7554931640625,
+                "Outer wall": 139.39088439941406,
+                "Prime tower": 103.80651092529297,
+                "Sparse infill": 25.30622673034668,
+                "Top surface": 52.22238540649414,
+                "Travel": 114.04721069335938,
+                "Undefined": 98.3552474975586
+            },
+            "filament_change_times": 0,
+            "filaments": [
+                {
+                    "filament_id": "GFL99",
+                    "id": 1,
+                    "main_used_g": 1.9240763187408447,
+                    "total_used_g": 2.426396131515503
+                },
+                {
+                    "filament_id": "GFL99",
+                    "id": 2,
+                    "main_used_g": 0.08022784441709518,
+                    "total_used_g": 0.2124345451593399
+                }
+            ],
+            "generate_support_material_time": 13,
+            "id": 1,
+            "infill_time": 46,
+            "layer_filament_change": 0,
+            "main_predication": 563.4271850585938,
+            "make_perimeters_time": 40,
+            "obj_cached_cnt": 0,
+            "objects": [
+                {
+                    "bbox": {
+                        "depth": 40.000003814697266,
+                        "height": 3.0,
+                        "width": 20.0,
+                        "x": 90.0,
+                        "y": 80.00000762939453,
+                        "z": 0.0
+                    },
+                    "id": 5,
+                    "name": "Custom three zone nameplate",
+                    "triangle_count": 12336
+                }
+            ],
+            "sliced_time": 288,
+            "sliced_time_with_cache": 176,
+            "total_predication": 731.21875,
+            "triangle_count": 12336,
+            "warning_message": ""
+        }
+    ],
+    "sparse_infill_density": 15.0,
+    "upward_compatible_machine": [
+        "Bambu Lab A1 0.4 nozzle",
+        "Bambu Lab H2S 0.4 nozzle",
+        "Bambu Lab H2D 0.4 nozzle",
+        "Bambu Lab H2D Pro 0.4 nozzle",
+        "Bambu Lab H2C 0.4 nozzle",
+        "Bambu Lab X2D 0.4 nozzle",
+        "Bambu Lab A2L 0.4 nozzle"
+    ],
+    "wall_loops": 3
+}

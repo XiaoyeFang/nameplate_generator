@@ -1,0 +1,184 @@
+{
+    "error_string": "Success.",
+    "export_time": 439,
+    "layer_height": 0.11999999731779099,
+    "plate_index": 0,
+    "prepare_time": 244,
+    "return_code": 0,
+    "sliced_plates": [
+        {
+            "feature_type_times": {
+                "Bottom surface": 252.63133239746094,
+                "Bridge": 256.6846008300781,
+                "Custom": 35.97672653198242,
+                "Flush": 193.52565002441406,
+                "Gap infill": 117.3606948852539,
+                "Inner wall": 494.00811767578125,
+                "Internal solid infill": 1116.7576904296875,
+                "Outer wall": 1820.7310791015625,
+                "Prime tower": 124.8305892944336,
+                "Sparse infill": 227.74911499023438,
+                "Top surface": 347.2442626953125,
+                "Travel": 895.4111328125,
+                "Undefined": 879.6466064453125
+            },
+            "filament_change_times": 2,
+            "filaments": [
+                {
+                    "filament_id": "GFL99",
+                    "id": 1,
+                    "main_used_g": 16.20089340209961,
+                    "total_used_g": 16.89522933959961
+                },
+                {
+                    "filament_id": "GFL99",
+                    "id": 2,
+                    "main_used_g": 0.9967057704925537,
+                    "total_used_g": 1.367226004600525
+                }
+            ],
+            "generate_support_material_time": 67,
+            "id": 1,
+            "infill_time": 826,
+            "layer_filament_change": 0,
+            "main_predication": 5528.384765625,
+            "make_perimeters_time": 1352,
+            "obj_cached_cnt": 0,
+            "objects": [
+                {
+                    "bbox": {
+                        "depth": 40.0,
+                        "height": 2.799999952316284,
+                        "width": 20.0,
+                        "x": 40.0,
+                        "y": 35.0,
+                        "z": 0.0
+                    },
+                    "id": 5,
+                    "name": "Nameplate 1",
+                    "triangle_count": 23632
+                },
+                {
+                    "bbox": {
+                        "depth": 40.0,
+                        "height": 2.799999952316284,
+                        "width": 20.0,
+                        "x": 70.0,
+                        "y": 35.0,
+                        "z": 0.0
+                    },
+                    "id": 9,
+                    "name": "Nameplate 2",
+                    "triangle_count": 23632
+                },
+                {
+                    "bbox": {
+                        "depth": 40.0,
+                        "height": 2.799999952316284,
+                        "width": 20.0,
+                        "x": 100.0,
+                        "y": 35.0,
+                        "z": 0.0
+                    },
+                    "id": 13,
+                    "name": "Nameplate 3",
+                    "triangle_count": 23632
+                },
+                {
+                    "bbox": {
+                        "depth": 40.0,
+                        "height": 2.799999952316284,
+                        "width": 20.0,
+                        "x": 40.0,
+                        "y": 85.0,
+                        "z": 0.0
+                    },
+                    "id": 17,
+                    "name": "Nameplate 4",
+                    "triangle_count": 23632
+                },
+                {
+                    "bbox": {
+                        "depth": 40.0,
+                        "height": 2.799999952316284,
+                        "width": 20.0,
+                        "x": 70.0,
+                        "y": 85.0,
+                        "z": 0.0
+                    },
+                    "id": 21,
+                    "name": "Nameplate 5",
+                    "triangle_count": 23632
+                },
+                {
+                    "bbox": {
+                        "depth": 40.0,
+                        "height": 2.799999952316284,
+                        "width": 20.0,
+                        "x": 100.0,
+                        "y": 85.0,
+                        "z": 0.0
+                    },
+                    "id": 25,
+                    "name": "Nameplate 6",
+                    "triangle_count": 23632
+                },
+                {
+                    "bbox": {
+                        "depth": 40.0,
+                        "height": 2.799999952316284,
+                        "width": 20.0,
+                        "x": 40.0,
+                        "y": 135.0,
+                        "z": 0.0
+                    },
+                    "id": 29,
+                    "name": "Nameplate 7",
+                    "triangle_count": 23632
+                },
+                {
+                    "bbox": {
+                        "depth": 40.0,
+                        "height": 2.799999952316284,
+                        "width": 20.0,
+                        "x": 70.0,
+                        "y": 135.0,
+                        "z": 0.0
+                    },
+                    "id": 33,
+                    "name": "Nameplate 8",
+                    "triangle_count": 23632
+                },
+                {
+                    "bbox": {
+                        "depth": 40.0,
+                        "height": 2.799999952316284,
+                        "width": 20.0,
+                        "x": 100.0,
+                        "y": 135.0,
+                        "z": 0.0
+                    },
+                    "id": 37,
+                    "name": "Nameplate 9",
+                    "triangle_count": 23632
+                }
+            ],
+            "sliced_time": 6242,
+            "sliced_time_with_cache": 3856,
+            "total_predication": 5866.9228515625,
+            "triangle_count": 212688,
+            "warning_message": ""
+        }
+    ],
+    "sparse_infill_density": 15.0,
+    "upward_compatible_machine": [
+        "Bambu Lab A1 0.4 nozzle",
+        "Bambu Lab H2S 0.4 nozzle",
+        "Bambu Lab H2D 0.4 nozzle",
+        "Bambu Lab H2D Pro 0.4 nozzle",
+        "Bambu Lab H2C 0.4 nozzle",
+        "Bambu Lab X2D 0.4 nozzle",
+        "Bambu Lab A2L 0.4 nozzle"
+    ],
+    "wall_loops": 3
+}

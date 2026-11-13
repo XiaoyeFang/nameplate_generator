@@ -1,0 +1,5 @@
+numpy
+manifold3d
+trimesh
+fonttools
+pillow

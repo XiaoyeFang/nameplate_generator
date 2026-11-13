@@ -1,0 +1,102 @@
+{
+  "top": "正剑馆",
+  "name": "张波",
+  "bottom_columns_left_to_right": [
+    "敬天愛人"
+  ],
+  "layout": [
+    {
+      "char": "正",
+      "size_mm": 3.5,
+      "x": 5.9,
+      "y": 32.8,
+      "region": "top"
+    },
+    {
+      "char": "剑",
+      "size_mm": 3.5,
+      "x": 10.0,
+      "y": 32.8,
+      "region": "top"
+    },
+    {
+      "char": "馆",
+      "size_mm": 3.5,
+      "x": 14.1,
+      "y": 32.8,
+      "region": "top"
+    },
+    {
+      "char": "张",
+      "size_mm": 5,
+      "x": 6.5,
+      "y": 26.3,
+      "region": "name"
+    },
+    {
+      "char": "波",
+      "size_mm": 5,
+      "x": 13.5,
+      "y": 26.3,
+      "region": "name"
+    },
+    {
+      "char": "敬",
+      "size_mm": 4.2,
+      "x": 10,
+      "y": 19.5,
+      "region": "bottom"
+    },
+    {
+      "char": "天",
+      "size_mm": 4.2,
+      "x": 10,
+      "y": 14.5,
+      "region": "bottom"
+    },
+    {
+      "char": "愛",
+      "size_mm": 4.2,
+      "x": 10,
+      "y": 9.5,
+      "region": "bottom"
+    },
+    {
+      "char": "人",
+      "size_mm": 4.2,
+      "x": 10,
+      "y": 4.5,
+      "region": "bottom"
+    }
+  ],
+  "dimensions_mm": [
+    20,
+    40,
+    2.8
+  ],
+  "base_height_mm": 2.4,
+  "text_start_z_mm": 2.0,
+  "text_embedded_mm": 0.4,
+  "text_raised_mm": 0.4,
+  "fonts": {
+    "top": "华文行楷（行书风格）",
+    "name": "华文行楷（行书风格）",
+    "bottom": "微软雅黑粗体"
+  },
+  "slot_mm": {
+    "width": 11,
+    "height": 2.001,
+    "center": [
+      10,
+      37.3
+    ],
+    "through_base": true
+  },
+  "project_version": "1.7",
+  "printer": "P2S 0.4mm",
+  "material": "PLA",
+  "watertight": true,
+  "parts": 2,
+  "base_color": "#294F74",
+  "text_color": "#F4B435"
+}

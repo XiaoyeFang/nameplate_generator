@@ -1,0 +1,166 @@
+{
+  "top": "北京芸奕馆",
+  "name": "一二三四五",
+  "bottom_columns_left_to_right": [
+    "剑心永明",
+    "战斗不止"
+  ],
+  "layout": [
+    {
+      "char": "北",
+      "size_mm": 2.9,
+      "x": 3.3,
+      "y": 32.8,
+      "region": "top"
+    },
+    {
+      "char": "京",
+      "size_mm": 2.9,
+      "x": 6.65,
+      "y": 32.8,
+      "region": "top"
+    },
+    {
+      "char": "芸",
+      "size_mm": 2.9,
+      "x": 10.0,
+      "y": 32.8,
+      "region": "top"
+    },
+    {
+      "char": "奕",
+      "size_mm": 2.9,
+      "x": 13.35,
+      "y": 32.8,
+      "region": "top"
+    },
+    {
+      "char": "馆",
+      "size_mm": 2.9,
+      "x": 16.7,
+      "y": 32.8,
+      "region": "top"
+    },
+    {
+      "char": "一",
+      "size_mm": 2.9,
+      "x": 3.3,
+      "y": 26.3,
+      "region": "name"
+    },
+    {
+      "char": "二",
+      "size_mm": 2.9,
+      "x": 6.65,
+      "y": 26.3,
+      "region": "name"
+    },
+    {
+      "char": "三",
+      "size_mm": 2.9,
+      "x": 10.0,
+      "y": 26.3,
+      "region": "name"
+    },
+    {
+      "char": "四",
+      "size_mm": 2.9,
+      "x": 13.35,
+      "y": 26.3,
+      "region": "name"
+    },
+    {
+      "char": "五",
+      "size_mm": 2.9,
+      "x": 16.7,
+      "y": 26.3,
+      "region": "name"
+    },
+    {
+      "char": "剑",
+      "size_mm": 4.2,
+      "x": 5.7,
+      "y": 19.5,
+      "region": "bottom"
+    },
+    {
+      "char": "心",
+      "size_mm": 4.2,
+      "x": 5.7,
+      "y": 14.5,
+      "region": "bottom"
+    },
+    {
+      "char": "永",
+      "size_mm": 4.2,
+      "x": 5.7,
+      "y": 9.5,
+      "region": "bottom"
+    },
+    {
+      "char": "明",
+      "size_mm": 4.2,
+      "x": 5.7,
+      "y": 4.5,
+      "region": "bottom"
+    },
+    {
+      "char": "战",
+      "size_mm": 4.2,
+      "x": 14.3,
+      "y": 19.5,
+      "region": "bottom"
+    },
+    {
+      "char": "斗",
+      "size_mm": 4.2,
+      "x": 14.3,
+      "y": 14.5,
+      "region": "bottom"
+    },
+    {
+      "char": "不",
+      "size_mm": 4.2,
+      "x": 14.3,
+      "y": 9.5,
+      "region": "bottom"
+    },
+    {
+      "char": "止",
+      "size_mm": 4.2,
+      "x": 14.3,
+      "y": 4.5,
+      "region": "bottom"
+    }
+  ],
+  "dimensions_mm": [
+    20,
+    40,
+    2.8
+  ],
+  "base_height_mm": 2.4,
+  "text_start_z_mm": 2.0,
+  "text_embedded_mm": 0.4,
+  "text_raised_mm": 0.4,
+  "fonts": {
+    "top": "宋体",
+    "name": "楷体",
+    "bottom": "华文行楷（行书风格）"
+  },
+  "slot_mm": {
+    "width": 11,
+    "height": 2.001,
+    "center": [
+      10,
+      37.3
+    ],
+    "through_base": true
+  },
+  "project_version": "1.7",
+  "printer": "P2S 0.4mm",
+  "material": "PLA",
+  "watertight": true,
+  "parts": 2,
+  "base_color": "#294F74",
+  "text_color": "#F4B435"
+}

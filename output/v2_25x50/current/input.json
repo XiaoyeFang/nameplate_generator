@@ -1,0 +1,123 @@
+{
+  "top": "北京芸奕馆",
+  "name": "王兆伟",
+  "bottom_columns_left_to_right": [
+    "文武两歧"
+  ],
+  "layout": [
+    {
+      "char": "北",
+      "size_mm": 3.625,
+      "x": 4.125,
+      "y": 41.0,
+      "region": "top"
+    },
+    {
+      "char": "京",
+      "size_mm": 3.625,
+      "x": 8.3125,
+      "y": 41.0,
+      "region": "top"
+    },
+    {
+      "char": "芸",
+      "size_mm": 3.625,
+      "x": 12.5,
+      "y": 41.0,
+      "region": "top"
+    },
+    {
+      "char": "奕",
+      "size_mm": 3.625,
+      "x": 16.6875,
+      "y": 41.0,
+      "region": "top"
+    },
+    {
+      "char": "馆",
+      "size_mm": 3.625,
+      "x": 20.875,
+      "y": 41.0,
+      "region": "top"
+    },
+    {
+      "char": "王",
+      "size_mm": 6.25,
+      "x": 5.625,
+      "y": 32.875,
+      "region": "name"
+    },
+    {
+      "char": "兆",
+      "size_mm": 6.25,
+      "x": 12.5,
+      "y": 32.875,
+      "region": "name"
+    },
+    {
+      "char": "伟",
+      "size_mm": 6.25,
+      "x": 19.375,
+      "y": 32.875,
+      "region": "name"
+    },
+    {
+      "char": "文",
+      "size_mm": 5.25,
+      "x": 12.5,
+      "y": 24.375,
+      "region": "bottom"
+    },
+    {
+      "char": "武",
+      "size_mm": 5.25,
+      "x": 12.5,
+      "y": 18.125,
+      "region": "bottom"
+    },
+    {
+      "char": "两",
+      "size_mm": 5.25,
+      "x": 12.5,
+      "y": 11.875,
+      "region": "bottom"
+    },
+    {
+      "char": "歧",
+      "size_mm": 5.25,
+      "x": 12.5,
+      "y": 5.625,
+      "region": "bottom"
+    }
+  ],
+  "dimensions_mm": [
+    25,
+    50,
+    3.0
+  ],
+  "base_height_mm": 2.4,
+  "text_start_z_mm": 2.0,
+  "text_embedded_mm": 0.4,
+  "text_raised_mm": 0.6,
+  "fonts": {
+    "top": "华文行楷（行书风格）",
+    "name": "华文行楷（行书风格）",
+    "bottom": "华文行楷（行书风格）"
+  },
+  "slot_mm": {
+    "width": 13.75,
+    "height": 2.50125,
+    "center": [
+      12.5,
+      46.625
+    ],
+    "through_base": true
+  },
+  "project_version": "2.0",
+  "printer": "P2S 0.4mm",
+  "material": "PLA",
+  "watertight": true,
+  "parts": 2,
+  "base_color": "#0000FF",
+  "text_color": "#FFFF00"
+}

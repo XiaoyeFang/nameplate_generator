@@ -1,0 +1,99 @@
+{
+  "top": "北京芸奕",
+  "name": "王珊",
+  "bottom_columns_left_to_right": [
+    "我最牛B"
+  ],
+  "layout": [
+    {
+      "char": "北",
+      "size_mm": 3.5,
+      "x": 3.8500000000000005,
+      "y": 32.8,
+      "region": "top"
+    },
+    {
+      "char": "京",
+      "size_mm": 3.5,
+      "x": 7.95,
+      "y": 32.8,
+      "region": "top"
+    },
+    {
+      "char": "芸",
+      "size_mm": 3.5,
+      "x": 12.05,
+      "y": 32.8,
+      "region": "top"
+    },
+    {
+      "char": "奕",
+      "size_mm": 3.5,
+      "x": 16.15,
+      "y": 32.8,
+      "region": "top"
+    },
+    {
+      "char": "王",
+      "size_mm": 5,
+      "x": 6.5,
+      "y": 27.5,
+      "region": "name"
+    },
+    {
+      "char": "珊",
+      "size_mm": 5,
+      "x": 13.5,
+      "y": 27.5,
+      "region": "name"
+    },
+    {
+      "char": "我",
+      "size_mm": 4.2,
+      "x": 10,
+      "y": 19.5,
+      "region": "bottom"
+    },
+    {
+      "char": "最",
+      "size_mm": 4.2,
+      "x": 10,
+      "y": 14.5,
+      "region": "bottom"
+    },
+    {
+      "char": "牛",
+      "size_mm": 4.2,
+      "x": 10,
+      "y": 9.5,
+      "region": "bottom"
+    },
+    {
+      "char": "B",
+      "size_mm": 4.2,
+      "x": 10,
+      "y": 4.5,
+      "region": "bottom"
+    }
+  ],
+  "dimensions_mm": [
+    20,
+    40,
+    3
+  ],
+  "font": "Microsoft YaHei Bold",
+  "slot_mm": {
+    "width": 11,
+    "height": 2.001,
+    "center": [
+      10,
+      37.3
+    ],
+    "through_base": true
+  },
+  "project_version": "1.1",
+  "printer": "P2S 0.4mm",
+  "material": "PLA",
+  "watertight": true,
+  "parts": 2
+}
