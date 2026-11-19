@@ -6,6 +6,6 @@ Windows 桌面工具：三处独立文字、字体与颜色，可调尺寸和字
 
 打印配置：Bambu P2S、0.2 mm 喷嘴、PLA，四项填充图案为八角螺旋。
 
-内置字体的来源与许可在 assets/fonts 中。华康行楷体需自行取得字体文件，放到 assets/fonts/DFPXingKaiW5-B5.ttf 后即可在菜单中选择；该字体文件不随仓库分发。
+字体文件位于 assets/fonts 中，包含华康行楷体 W5-B5，拉取项目后无需另行安装该字体。华康字体来自用户提供的文件；开源字体的来源与许可文件保存在同目录。
 
 详细功能记录见 README.txt。测试：python -m unittest discover -p test_generator.py。
