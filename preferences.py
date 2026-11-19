@@ -14,7 +14,9 @@ def load(path=PATH):
         if isinstance(data.get('texts'),list) and len(data['texts'])==3 and all(isinstance(v,str) for v in data['texts']):result['texts']=data['texts']
         if isinstance(data.get('font'),str):result['fonts']=[data['font']]*3
         if isinstance(data.get('fonts'),list) and len(data['fonts'])==3 and all(isinstance(v,str) for v in data['fonts']):result['fonts']=data['fonts']
-        if isinstance(data.get('batch'),list):result['batch']=data['batch'][:9]
+        if isinstance(data.get('batch'),list):result['batch']=data['batch']
+        from generator import sizing
+        result['options']=sizing(data.get('options'))
         import re
         if isinstance(data.get('colors'),list) and len(data['colors'])==2 and all(isinstance(v,str) and re.fullmatch(r'#[0-9a-fA-F]{6}',v) for v in data['colors']):result['colors']=data['colors']
     except (OSError,ValueError):pass

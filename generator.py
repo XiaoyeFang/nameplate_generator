@@ -14,6 +14,9 @@ from PIL import Image, ImageDraw
 
 HERE=Path(__file__).resolve().parent
 FONT_FILES={'微软雅黑粗体':'msyhbd.ttc','微软雅黑':'msyh.ttc','楷体':'simkai.ttf','华文楷体':'STKAITI.TTF','宋体':'simsun.ttc','黑体':'simhei.ttf','华文行楷（行书风格）':'STXINGKA.TTF','华文仿宋':'STFANGSO.TTF'}
+FONT_FILES['霞鹜文楷TC（繁体手写）']=str(HERE/'assets/fonts/LXGWWenKaiTC-Medium.ttf')
+FONT_FILES['正风毛笔（繁体行书·粗体）']=str(HERE/'assets/fonts/MasaFont-Bold.ttf')
+FONT_FILES['华康行楷体W5-B5（繁体行楷）']=str(HERE/'assets/fonts/DFPXingKaiW5-B5.ttf')
 DEFAULT_FONT='微软雅黑粗体'
 def available_fonts():return [name for name,file in FONT_FILES.items() if (Path('C:/Windows/Fonts')/file).is_file()]
 @lru_cache(maxsize=16)
@@ -58,7 +61,7 @@ def validate(top,name,bottom,font_name=DEFAULT_FONT):
     columns=re.split(r'[\s/／|｜]+',bottom.strip()) if bottom.strip() else []
     if not 1<=len(top)<=5:raise ValueError('顶部小字请输入 1～5 个字。')
     if not 1<=len(name)<=5:raise ValueError('姓名请输入 1～5 个字，空格不计入字数。')
-    if not 1<=len(columns)<=2 or any(not 1<=len(s)<=4 for s in columns):raise ValueError('底部请输入 1～2 列，每列 1～4 字；两列用空格分隔。')
+    if not 1<=len(columns)<=2 or any(not 1<=len(s)<=6 for s in columns):raise ValueError('底部请输入 1～2 列，每列 1～6 字；两列用空格分隔。')
     for text,f in zip([top,name,''.join(columns)],fonts):
         select_font(f)
         for ch in text:
@@ -73,37 +76,53 @@ def glyph(ch,size,x,y):
     scale=size/max(hi-lo)
     return md.CrossSection([(q-(lo+hi)/2)*scale+[x,y] for q in p.contours],md.FillRule.NonZero)
 
-def make(top,name,bottom,font_name=DEFAULT_FONT):
+def sizing(options=None):
+    o=dict(width=25.,height=50.,sizes=[0.,0.,0.]);o.update(options or {})
+    try:
+        o['width']=float(o['width']);o['height']=float(o['height']);o['sizes']=[float(v) for v in o['sizes']]
+        assert 15<=o['width']<=50 and 30<=o['height']<=100 and len(o['sizes'])==3
+        assert all(np.isfinite(v) and 0<=v<=20 for v in o['sizes'])
+    except (ValueError,TypeError,AssertionError):raise ValueError('宽度15～50 mm，高度30～100 mm；字号0～20 mm（0为自动）。')
+    return o
+
+def make(top,name,bottom,font_name=DEFAULT_FONT,options=None):
     top,name,cols=validate(top,name,bottom,font_name)
     fonts=dict(zip(['top','name','bottom'],resolve_fonts(font_name)))
-    letters=md.CrossSection();layout=[]
-    def put(ch,s,x,y,region):
+    o=sizing(options);w,h=o['width'],o['height'];factor=min(w/25,h/50)
+    defaults=[(2.9 if len(top)==5 else 3.5)*1.25,{1:5,2:5,3:5,4:3.7,5:2.9}[len(name)]*1.25,5.775]
+    sizes=[v or d*factor for v,d in zip(o['sizes'],defaults)]
+    if not o['sizes'][2]:
+        count=max(map(len,cols));gap=.475*factor
+        room=2*min(h*.3-1,h*.3575-sizes[1]/2-.8)
+        sizes[2]=min(sizes[2],(room-(count-1)*gap)/count)
+        if sizes[2]<=0:raise ValueError('底部没有足够空间，请增高底板或减小姓名字号。')
+    letters=md.CrossSection();layout=[];boxes=[]
+    def put(ch,size,x,y,region):
         nonlocal letters
-        select_font(fonts[region])
-        letters=letters+glyph(ch,s,x,y);layout.append(dict(char=ch,size_mm=s,x=x,y=y,region=region))
-    # Top lettering is closer to the name; the upper band holds a strap slot.
-    top_size,top_pitch=(2.9,3.35) if len(top)==5 else (3.5,4.1)
-    for i,ch in enumerate(top):put(ch,top_size,10+(i-(len(top)-1)/2)*top_pitch,32.8,'top')
-    name_size,pitch={1:(5,5.5),2:(5,7),3:(5,5.5),4:(3.7,4.1),5:(2.9,3.35)}[len(name)]
-    for i,ch in enumerate(name):put(ch,name_size,10+(i-(len(name)-1)/2)*pitch,26.3,'name')
+        box=(x-size/2,y-size/2,x+size/2,y+size/2)
+        if box[0]<1 or box[2]>w-1 or box[1]<1 or box[3]>h*.89:
+            raise ValueError('文字超出安全区域，请减小字号或增大名牌。')
+        if any(box[0]<b[2] and box[2]>b[0] and box[1]<b[3] and box[3]>b[1] for b in boxes):
+            raise ValueError('文字区域重叠，请减小字号或增大名牌。')
+        boxes.append(box);select_font(fonts[region]);letters=letters+glyph(ch,size,x,y)
+        layout.append(dict(char=ch,size_mm=size,x=x,y=y,region=region))
+    for text,size,cy,region,gap in [(top,sizes[0],h*.82,'top',.6),(name,sizes[1],h*.6575,'name',2.5 if len(name)==2 else .6)]:
+        pitch=size+gap*factor
+        for i,ch in enumerate(text):put(ch,size,w/2+(i-(len(text)-1)/2)*pitch,cy,region)
     for j,col in enumerate(cols):
-        x=10 if len(cols)==1 else (5.7 if j==0 else 14.3)
-        for i,ch in enumerate(col):put(ch,4.62,x,12+(len(col)-1)*2.5-i*5,'bottom')
-    base=md.CrossSection.square([16,36],True).offset(2,circular_segments=96).translate([10,20]).extrude(2.4)
-    slot=md.CrossSection.square([9,0.001],True).offset(1,circular_segments=64).translate([10,37.3])
-    base=base-slot.extrude(4).translate([0,0,-.5])
-    # Embedded lettering: replace the top 0.4 mm of the base, then rise 0.6 mm.
-    base=base-letters.extrude(1.2).translate([0,0,2.0])
-    text=letters.extrude(1.0).translate([0,0,2.0])
-    meshes=[]
-    for s in [base,text]:
-        s=s.scale([1.25,1.25,1])
-        r=s.to_mesh();m=trimesh.Trimesh(np.asarray(r.vert_properties)[:,:3],np.asarray(r.tri_verts),process=True)
+        x=w/2 if len(cols)==1 else w*(.285 if j==0 else .715)
+        pitch=sizes[2]+.475*factor
+        for i,ch in enumerate(col):put(ch,sizes[2],x,h*.3+((len(col)-1)/2-i)*pitch,'bottom')
+    base2=md.CrossSection.square([16,36],True).offset(2,circular_segments=96).translate([10,20]).scale([w/20,h/40])
+    slot=md.CrossSection.square([9,.001],True).offset(1,circular_segments=64).translate([10,37.3]).scale([w/20,h/40])
+    base=(base2-slot).extrude(2.4)-letters.extrude(1.2).translate([0,0,2.0])
+    text=letters.extrude(1.).translate([0,0,2.0]);meshes=[]
+    for solid in [base,text]:
+        r=solid.to_mesh();m=trimesh.Trimesh(np.asarray(r.vert_properties)[:,:3],np.asarray(r.tri_verts),process=True)
         assert m.is_watertight and m.is_winding_consistent and m.volume>0
         meshes.append(m)
-    for item in layout:
-        for key in ['size_mm','x','y']:item[key]*=1.25
-    return meshes,dict(top=top,name=name,bottom_columns_left_to_right=cols,layout=layout,dimensions_mm=[25,50,3.0],base_height_mm=2.4,text_start_z_mm=2.0,text_embedded_mm=.4,text_raised_mm=.6,fonts=fonts,slot_mm={'width':13.75,'height':2.50125,'center':[12.5,46.625],'through_base':True})
+    return meshes,dict(top=top,name=name,bottom_columns_left_to_right=cols,layout=layout,dimensions_mm=[w,h,3.0],base_height_mm=2.4,text_start_z_mm=2.0,text_embedded_mm=.4,text_raised_mm=.6,fonts=fonts,options=o,font_sizes_mm=sizes,slot_mm={'width':w*.55,'height':h*2.001/40,'center':[w/2,h*.9325],'through_base':True})
+
 
 def palette(base_color,text_color):
     colors=[base_color,text_color]
@@ -114,9 +133,10 @@ def palette(base_color,text_color):
 def preview(meshes,base_color='#294F74',text_color='#F4B435'):
     base_color,text_color=palette(base_color,text_color)
     im=Image.new('RGB',(360,660),'#edf0f5');d=ImageDraw.Draw(im)
+    w,h=meshes[0].bounds[1,:2];scale=min(300/w,600/h);ox=(360-w*scale)/2;oy=(660+h*scale)/2
     for m,color,z in [(meshes[0],base_color,2.4),(meshes[1],text_color,3.0)]:
         for tri in m.triangles:
-            if np.all(abs(tri[:,2]-z)<.0001):d.polygon([(30+float(v[0])*12,630-float(v[1])*12) for v in tri],fill=color)
+            if np.all(abs(tri[:,2]-z)<.0001):d.polygon([(ox+float(v[0])*scale,oy-float(v[1])*scale) for v in tri],fill=color)
     return im
 
 def meta(parent,key,value):
@@ -124,9 +144,9 @@ def meta(parent,key,value):
     if n is None:n=ET.SubElement(parent,'metadata',key=key)
     n.set('value',str(value))
 
-def export(top,name,bottom,out=None,base_color='#294F74',text_color='#F4B435',font_name=DEFAULT_FONT):
+def export(top,name,bottom,out=None,base_color='#294F74',text_color='#F4B435',font_name=DEFAULT_FONT,options=None):
     colors=palette(base_color,text_color)
-    meshes,record=make(top,name,bottom,font_name)
+    meshes,record=make(top,name,bottom,font_name,options)
     folder=Path(out) if out else HERE/'output'/(datetime.now().strftime('%Y%m%d_%H%M%S_%f')+'_'+record['name'])
     folder.mkdir(parents=True,exist_ok=True)
     with ZipFile(HERE/'assets/template.3mf') as z:files={n:z.read(n) for n in z.namelist() if not n.endswith('.gcode')}
@@ -160,7 +180,7 @@ def export(top,name,bottom,out=None,base_color='#294F74',text_color='#F4B435',fo
     with ZipFile(path,'w',ZIP_DEFLATED) as z:
         for n,data in files.items():z.writestr(n,data)
     with ZipFile(path) as z:assert z.testzip() is None
-    record.update(project_version='2.2',printer='P2S 0.2mm',material='PLA',watertight=True,parts=2,base_color=colors[0],text_color=colors[1])
+    record.update(project_version='2.5',printer='P2S 0.2mm',material='PLA',watertight=True,parts=2,base_color=colors[0],text_color=colors[1])
     (folder/'input.json').write_text(json.dumps(record,ensure_ascii=False,indent=2),encoding='utf-8')
     return path
 

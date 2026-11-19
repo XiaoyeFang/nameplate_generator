@@ -34,7 +34,7 @@
   "bottom_shell_layers": "5",
   "bottom_shell_thickness": "0",
   "bottom_surface_density": "100",
-  "bottom_surface_pattern": "monotonic",
+  "bottom_surface_pattern": "octagramspiral",
   "bridge_angle": "0",
   "bridge_flow": "1",
   "bridge_no_support": "0",
@@ -137,7 +137,7 @@
     "50"
   ],
   "different_settings_to_system": [
-    "",
+    "top_surface_pattern;bottom_surface_pattern;internal_solid_infill_pattern;sparse_infill_pattern",
     "",
     "",
     ""
@@ -732,7 +732,7 @@
   "interlocking_orientation": "22.5",
   "internal_bridge_support_thickness": "0.8",
   "internal_solid_infill_line_width": "0.22",
-  "internal_solid_infill_pattern": "zig-zag",
+  "internal_solid_infill_pattern": "octagramspiral",
   "internal_solid_infill_speed": [
     "150",
     "150"
@@ -1189,7 +1189,7 @@
   "sparse_infill_lattice_angle_1": "-45",
   "sparse_infill_lattice_angle_2": "45",
   "sparse_infill_line_width": "0.22",
-  "sparse_infill_pattern": "grid",
+  "sparse_infill_pattern": "octagramspiral",
   "sparse_infill_speed": [
     "100",
     "100"
@@ -1289,7 +1289,7 @@
   "top_surface_density": "100",
   "top_surface_jerk": "9",
   "top_surface_line_width": "0.22",
-  "top_surface_pattern": "monotonicline",
+  "top_surface_pattern": "octagramspiral",
   "top_surface_speed": [
     "150"
   ],
