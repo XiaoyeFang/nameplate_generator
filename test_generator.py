@@ -59,6 +59,23 @@ class GeneratorTests(unittest.TestCase):
         ys,xs=np.where(b);self.assertGreater(len(xs),0)
         self.assertTrue(np.array_equal(a[ys.min():ys.max()+1,xs.min():xs.max()+1],b[ys.min():ys.max()+1,xs.min():xs.max()+1]))
 
+    def test_model_cache_isolated_and_cancellation(self):
+        from generator import _cached_make
+        from batch import export_batch
+        _cached_make.cache_clear()
+        a,r=make('北京','王珊','剑心')
+        bounds=a[0].bounds.copy();a[0].apply_translation([100,0,0]);r['name']='changed'
+        b,r2=make('北京','王珊','剑心')
+        self.assertTrue(np.allclose(b[0].bounds,bounds))
+        self.assertEqual(r2['name'],'王珊');self.assertEqual(_cached_make.cache_info().misses,1)
+        class Cancelled(Exception):pass
+        def stop(done,total,message):
+            if done==1:raise Cancelled()
+        item=dict(texts=['北京','王珊','剑心'],fonts=['楷体']*3,colors=['#294F74','#F4B435'])
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaises(Cancelled):export_batch([item]*2,tmp,progress=stop)
+            self.assertFalse((Path(tmp)/'nameplates_plate.3mf').exists())
+
     def test_custom_dimensions_and_font_sizes(self):
         opts=dict(width=30,height=60,sizes=[4,6,7])
         meshes,r=make('北京','王珊','剑心永明',options=opts)

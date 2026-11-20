@@ -2,7 +2,9 @@
 from pathlib import Path
 from datetime import datetime
 from zipfile import ZipFile, ZIP_DEFLATED
-import argparse, json, re, io
+import argparse, json, re, io, copy
+from threading import RLock
+MODEL_LOCK=RLock()
 from functools import lru_cache
 import xml.etree.ElementTree as ET
 import numpy as np
@@ -86,6 +88,17 @@ def sizing(options=None):
     return o
 
 def make(top,name,bottom,font_name=DEFAULT_FONT,options=None):
+    o=sizing(options)
+    key=(top,name,bottom,tuple(resolve_fonts(font_name)),o['width'],o['height'],tuple(o['sizes']))
+    with MODEL_LOCK:
+        meshes,record=_cached_make(*key)
+        return [m.copy() for m in meshes],copy.deepcopy(record)
+
+@lru_cache(maxsize=64)
+def _cached_make(top,name,bottom,font_name,width,height,sizes):
+    return _make_uncached(top,name,bottom,font_name,dict(width=width,height=height,sizes=list(sizes)))
+
+def _make_uncached(top,name,bottom,font_name=DEFAULT_FONT,options=None):
     top,name,cols=validate(top,name,bottom,font_name)
     fonts=dict(zip(['top','name','bottom'],resolve_fonts(font_name)))
     o=sizing(options);w,h=o['width'],o['height'];factor=min(w/25,h/50)
@@ -144,11 +157,9 @@ def meta(parent,key,value):
     if n is None:n=ET.SubElement(parent,'metadata',key=key)
     n.set('value',str(value))
 
-def export(top,name,bottom,out=None,base_color='#294F74',text_color='#F4B435',font_name=DEFAULT_FONT,options=None):
+def build_package(top,name,bottom,base_color='#294F74',text_color='#F4B435',font_name=DEFAULT_FONT,options=None,with_preview=True):
     colors=palette(base_color,text_color)
     meshes,record=make(top,name,bottom,font_name,options)
-    folder=Path(out) if out else HERE/'output'/(datetime.now().strftime('%Y%m%d_%H%M%S_%f')+'_'+record['name'])
-    folder.mkdir(parents=True,exist_ok=True)
     with ZipFile(HERE/'assets/template.3mf') as z:files={n:z.read(n) for n in z.namelist() if not n.endswith('.gcode')}
     root=ET.fromstring(files['3D/3dmodel.model']);native=ET.fromstring(files['3D/Objects/object_1.model']);cfg=ET.fromstring(files['Metadata/model_settings.config'])
     total=0
@@ -172,15 +183,24 @@ def export(top,name,bottom,out=None,base_color='#294F74',text_color='#F4B435',fo
     settings['filament_colour']=colors
     settings['default_filament_colour']=colors
     files['Metadata/project_settings.config']=json.dumps(settings).encode()
-    pic=preview(meshes,*colors);pic.save(folder/'preview.png')
+    pic=preview(meshes,*colors) if with_preview else None
     for n in list(files):
-        if n.endswith('.png'):
+        if n.endswith('.png') and pic is not None:
             b=io.BytesIO();pic.resize((256,256)).save(b,format='PNG');files[n]=b.getvalue()
-    path=folder/'nameplate.3mf'
-    with ZipFile(path,'w',ZIP_DEFLATED) as z:
+    record.update(project_version='2.7',printer='P2S 0.2mm',material='PLA',watertight=True,parts=2,base_color=colors[0],text_color=colors[1])
+    return files,record,pic
+
+def export(top,name,bottom,out=None,base_color='#294F74',text_color='#F4B435',font_name=DEFAULT_FONT,options=None,progress=None):
+    if progress:progress(0,1,'生成姓名牌')
+    files,record,pic=build_package(top,name,bottom,base_color,text_color,font_name,options)
+    folder=Path(out) if out else HERE/'output'/(datetime.now().strftime('%Y%m%d_%H%M%S_%f')+'_'+record['name'])
+    folder.mkdir(parents=True,exist_ok=True)
+    if progress:progress(1,1,'保存工程')
+    path=folder/'nameplate.3mf';temporary=path.with_suffix('.tmp')
+    with ZipFile(temporary,'w',ZIP_DEFLATED) as z:
         for n,data in files.items():z.writestr(n,data)
-    with ZipFile(path) as z:assert z.testzip() is None
-    record.update(project_version='2.5',printer='P2S 0.2mm',material='PLA',watertight=True,parts=2,base_color=colors[0],text_color=colors[1])
+    with ZipFile(temporary) as z:assert z.testzip() is None
+    temporary.replace(path);pic.save(folder/'preview.png')
     (folder/'input.json').write_text(json.dumps(record,ensure_ascii=False,indent=2),encoding='utf-8')
     return path
 

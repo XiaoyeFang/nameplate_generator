@@ -7,9 +7,10 @@ import preferences
 from batch import export_batch,validate_batch
 from plate_preview import render_plate,split_plates
 import copy
+import threading,queue
 saved=preferences.load()
 
-root=tk.Tk();root.title('三位置姓名牌生成器 v2.6.1 · 整盘预览')
+root=tk.Tk();root.title('三位置姓名牌生成器 v2.7 · 整盘预览')
 root.geometry(f'{min(900,root.winfo_screenwidth()-80)}x{min(800,root.winfo_screenheight()-120)}')
 root.minsize(560,400)
 # Reserve the action bar before allocating the remaining height to content.
@@ -104,7 +105,7 @@ def refresh_plate():
 status=tk.StringVar(value='点击预览检查排版，然后生成文件。');ttk.Label(form,textvariable=status,wraplength=340).pack(anchor='w',pady=12)
 batch_items=[]
 for item in saved.get('batch',[]):
-    try:validate_batch(batch_items+[item]);batch_items.append(item)
+    try:validate_batch([item]);batch_items.append(item)
     except (ValueError,KeyError,TypeError):pass
 ttk.Label(form,text='项目清单（自动分盘，每盘最多9块）').pack(anchor='w')
 batch_list=tk.Listbox(form,height=5,exportselection=False);batch_list.pack(fill='x',pady=5)
@@ -115,7 +116,7 @@ def refresh_batch():
     refresh_plate()
 def add_item():
     try:
-        item=current_template();validate_batch(batch_items+[item]);batch_items.append(copy.deepcopy(item));refresh_batch();previews.select(plate_tab);schedule_save();status.set(f'项目已加入 {len(batch_items)} 块，自动分为 {len(split_plates(batch_items))} 盘。')
+        item=current_template();validate_batch([item]);batch_items.append(copy.deepcopy(item));refresh_batch();previews.select(plate_tab);schedule_save();status.set(f'项目已加入 {len(batch_items)} 块，自动分为 {len(split_plates(batch_items))} 盘。')
     except ValueError as e:messagebox.showerror('本盘提示',str(e))
 def load_item():
     selected=batch_list.curselection()
@@ -133,7 +134,7 @@ def replace_item():
     selected=batch_list.curselection()
     if not selected:return
     try:
-        updated=copy.deepcopy(batch_items);updated[selected[0]]=current_template();validate_batch(updated);batch_items[:]=updated;refresh_batch();previews.select(plate_tab);schedule_save()
+        updated=copy.deepcopy(batch_items);updated[selected[0]]=current_template();validate_batch([updated[selected[0]]]);batch_items[:]=updated;refresh_batch();previews.select(plate_tab);schedule_save()
     except ValueError as e:messagebox.showerror('本盘提示',str(e))
 def remove_item():
     selected=batch_list.curselection()
@@ -149,15 +150,57 @@ def update():
         measure.set(f'实际尺寸：宽 {w:g} × 高 {h:g} mm\n总厚 3.0 mm · 凸字 0.6 mm\n顶部 {a:.2f} / 姓名 {b:.2f} / 底部 {c:.2f} mm\n预览按比例缩放，非屏幕 1:1')
         status.set('尺寸与字号已应用到预览和生成参数。');return True
     except ValueError as e:messagebox.showerror('输入提示',str(e));return False
+job_active=False
+job_events=queue.Queue()
+cancel_event=threading.Event()
+class ExportCancelled(Exception):pass
+
+def run_export(work):
+    global job_active
+    if job_active:return
+    job_active=True;cancel_event.clear();disabled=[]
+    def disable(parent):
+        for child in parent.winfo_children():
+            if child is cancel_button:continue
+            try:
+                state=child.cget('state');child.configure(state='disabled');disabled.append((child,state))
+            except tk.TclError:pass
+            disable(child)
+    disable(root);cancel_button.configure(state='normal');status.set('正在准备生成…')
+    def progress(done,total,message):
+        if cancel_event.is_set():raise ExportCancelled()
+        job_events.put(('progress',message))
+    def worker():
+        try:job_events.put(('done',work(progress)))
+        except ExportCancelled:job_events.put(('cancel',None))
+        except Exception as e:job_events.put(('error',str(e)))
+    def poll():
+        global job_active
+        while not job_events.empty():
+            kind,value=job_events.get()
+            if kind=='progress':status.set(value);continue
+            job_active=False
+            for widget,state in disabled:
+                if widget.winfo_exists():widget.configure(state=state)
+            cancel_button.configure(state='disabled')
+            if kind=='done':status.set('已保存：'+str(value));os.startfile(str(value.parent))
+            elif kind=='cancel':status.set('已取消生成，未发布最终工程。')
+            else:status.set('生成失败：'+value);messagebox.showerror('生成失败',value)
+            return
+        root.after(100,poll)
+    threading.Thread(target=worker,daemon=True).start();root.after(100,poll)
+
 def save():
-    if not update():return
-    try:
-        path=export(*(v.get() for v in entries),base_color=colors[0],text_color=colors[1],font_name=[v.get() for v in font_vars],options=current_options());status.set('已保存：'+str(path));os.startfile(str(path.parent))
-    except Exception as e:messagebox.showerror('生成失败',str(e))
+    try:item=current_template()
+    except ValueError as e:messagebox.showerror('输入提示',str(e));return
+    run_export(lambda progress:export(*item['texts'],font_name=item['fonts'],base_color=item['colors'][0],text_color=item['colors'][1],options=item['options'],progress=progress))
+
 def save_batch():
-    try:
-        path=export_batch(copy.deepcopy(batch_items));status.set('整盘已保存：'+str(path));os.startfile(str(path.parent))
-    except Exception as e:messagebox.showerror('整盘生成失败',str(e))
+    items=copy.deepcopy(batch_items)
+    run_export(lambda progress:export_batch(items,progress=progress))
+
+cancel_button=ttk.Button(actions,text='取消生成',state='disabled',command=cancel_event.set)
+cancel_button.pack(side='left',padx=4)
 preview_button=ttk.Button(actions,text='预览当前',command=update)
 preview_button.pack(side='left',padx=(0,12),ipady=6)
 ttk.Button(actions,text='生成当前单块',command=save).pack(side='left',ipady=6,padx=(0,8))
@@ -175,6 +218,8 @@ def schedule_save(*args):
     pending_save=root.after(350,persist)
 for variable in entries+font_vars+size_vars:variable.trace_add('write',schedule_save)
 def close():
+    if job_active:
+        cancel_event.set();status.set('正在取消，请任务结束后关闭窗口。');return
     if pending_save is not None:root.after_cancel(pending_save)
     persist();root.destroy()
 root.protocol('WM_DELETE_WINDOW',close)
